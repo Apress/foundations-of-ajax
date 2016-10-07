@@ -1,0 +1,104 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Dynamically Filling Lists</title>
+
+<script type="text/javascript">
+var xmlHttp;
+
+function createXMLHttpRequest() {
+    if (window.ActiveXObject) {
+        xmlHttp = new ActiveXObject("Microsoft.XMLHTTP");
+    } 
+    else if (window.XMLHttpRequest) {
+        xmlHttp = new XMLHttpRequest();
+    }
+}
+    
+function refreshModelList() {
+    var make = document.getElementById("make").value;
+    var modelYear = document.getElementById("modelYear").value;
+
+    if(make == "" || modelYear == "") {
+        clearModelsList();
+        return;
+    }
+    
+    var url = "RefreshModelList?" 
+        + createQueryString(make, modelYear) + "&ts=" + new Date().getTime();
+        
+    createXMLHttpRequest();
+    xmlHttp.onreadystatechange = handleStateChange;
+    xmlHttp.open("GET", url, true);
+    xmlHttp.send(null);
+}
+
+function createQueryString(make, modelYear) {
+    var queryString = "make=" + make + "&modelYear=" + modelYear;
+    return queryString;
+}
+    
+function handleStateChange() {
+    if(xmlHttp.readyState == 4) {
+        if(xmlHttp.status == 200) {
+            updateModelsList();
+        }
+    }
+}
+
+function updateModelsList() {
+    clearModelsList();
+    
+    var models = document.getElementById("models");
+    var results = xmlHttp.responseXML.getElementsByTagName("model");
+    var option = null;
+    for(var i = 0; i < results.length; i++) {
+        option = document.createElement("option");
+        option.appendChild(document.createTextNode(results[i].firstChild.nodeValue));
+        models.appendChild(option);
+    }
+}
+
+function clearModelsList() {
+    var models = document.getElementById("models");
+    while(models.childNodes.length > 0) {
+        models.removeChild(models.childNodes[0]);
+    }
+}
+</script>
+</head>
+
+<body>
+  <h1>Select Model Year and Make</h1>
+  
+  <form action="#">
+    <span style="font-weight:bold;">Model Year:</span>
+    <select id="modelYear" onchange="refreshModelList();">
+        <option value="">Select One</option>
+        <option value="2006">2006</option>
+        <option value="1995">1995</option>
+        <option value="1985">1985</option>
+        <option value="1970">1970</option>
+    </select>
+    
+    <br/><br/>
+    <span style="font-weight:bold;">Make:</span>
+    <select id="make" onchange="refreshModelList();">
+        <option value="">Select One</option>
+        <option value="Chevrolet">Chevrolet</option>
+        <option value="Dodge">Dodge</option>
+        <option value="Pontiac">Pontiac</option>
+    </select>
+    
+    <br/><br/>
+    <span style="font-weight:bold;">Models:</span>
+    <br/>
+    <select id="models" size="6" style="width:300px;">
+    
+    </select>
+  
+  </form>
+
+</body>
+</html>

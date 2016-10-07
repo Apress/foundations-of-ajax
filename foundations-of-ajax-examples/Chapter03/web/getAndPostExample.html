@@ -1,0 +1,108 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Sending Request Data Using GET and POST</title>
+
+<script type="text/javascript">
+var xmlHttp;
+
+function createXMLHttpRequest() {
+    if (window.ActiveXObject) {
+        xmlHttp = new ActiveXObject("Microsoft.XMLHTTP");
+    } 
+    else if (window.XMLHttpRequest) {
+        xmlHttp = new XMLHttpRequest();
+    }
+}
+    
+function createQueryString() {
+    var firstName = document.getElementById("firstName").value;
+    var middleName = document.getElementById("middleName").value;
+    var birthday = document.getElementById("birthday").value;
+    
+    var queryString = "firstName=" + firstName + "&middleName=" + middleName
+        + "&birthday=" + birthday;
+    
+    return queryString;
+}
+
+function doRequestUsingGET() {
+    createXMLHttpRequest();
+    
+    var queryString = "GetAndPostExample?";
+    queryString = queryString + createQueryString() 
+        + "&timeStamp=" + new Date().getTime();
+    xmlHttp.onreadystatechange = handleStateChange;
+    xmlHttp.open("GET", queryString, true);
+    xmlHttp.send(null);
+}
+
+function doRequestUsingPOST() {
+    createXMLHttpRequest();
+    
+    var url = "GetAndPostExample?timeStamp=" + new Date().getTime();
+    var queryString = createQueryString();
+    
+    xmlHttp.open("POST", url, true);
+    xmlHttp.onreadystatechange = handleStateChange;
+    xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");    
+    xmlHttp.send(queryString);
+}
+    
+function handleStateChange() {
+    if(xmlHttp.readyState == 4) {
+        if(xmlHttp.status == 200) {
+            parseResults();
+        }
+    }
+}
+
+function parseResults() {
+    var responseDiv = document.getElementById("serverResponse");
+    if(responseDiv.hasChildNodes()) {
+        responseDiv.removeChild(responseDiv.childNodes[0]);
+    }
+    
+    var responseText = document.createTextNode(xmlHttp.responseText);
+    responseDiv.appendChild(responseText);
+}
+
+</script>
+</head>
+
+<body>
+  <h1>Enter your first name, middle name, and birthday:</h1>
+  
+  <table>
+    <tbody>
+        <tr>
+            <td>First name:</td>
+            <td><input type="text" id="firstName"/>
+        </tr>
+        <tr>
+            <td>Middle name:</td>
+            <td><input type="text" id="middleName"/>
+        </tr>
+        <tr>
+            <td>Birthday:</td>
+            <td><input type="text" id="birthday"/>
+        </tr>
+    </tbody>
+  
+  </table>
+  
+  <form action="#">
+    <input type="button" value="Send parameters using GET" onclick="doRequestUsingGET();"/>    
+    
+    <br/><br/>
+    <input type="button" value="Send parameters using POST" onclick="doRequestUsingPOST();"/>    
+  </form>
+
+  <br/>
+  <h2>Server Response:</h2>
+
+  <div id="serverResponse"></div>
+
+</body>
+</html>

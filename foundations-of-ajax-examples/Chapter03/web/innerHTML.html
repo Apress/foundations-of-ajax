@@ -1,0 +1,42 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+ <html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Using responseText with innerHTML</title>
+    
+<script type="text/javascript">
+var xmlHttp;
+
+function createXMLHttpRequest() {
+    if (window.ActiveXObject) {
+        xmlHttp = new ActiveXObject("Microsoft.XMLHTTP");
+    } 
+    else if (window.XMLHttpRequest) {
+        xmlHttp = new XMLHttpRequest();
+    }
+}
+    
+function startRequest() {
+    createXMLHttpRequest();
+    xmlHttp.onreadystatechange = handleStateChange;
+    xmlHttp.open("GET", "innerHTML.xml", true);
+    xmlHttp.send(null);
+}
+    
+function handleStateChange() {
+    if(xmlHttp.readyState == 4) {
+        if(xmlHttp.status == 200) {
+            document.getElementById("results").innerHTML = xmlHttp.responseText;
+        }
+    }
+}
+</script>
+</head>
+
+<body>
+    <form action="#">
+        <input type="button" value="Search for Today's Activities" onclick="startRequest();"/>
+    </form>
+    <div id="results"></div>
+</body>
+</html>

@@ -1,0 +1,66 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Classical Inheritance in JavaScript</title>
+
+<script type="text/javascript" src="classicalInheritance.js"></script>
+
+<script type="text/javaScript">
+function createInheritance(parent, child) {
+    var property; 
+    for(property in parent) {
+        if(!child[property]) {
+            child[property] = parent[property];
+        }
+    }
+}
+    
+    
+function describe(vehicle) {
+    var description = "";
+    description = description + "Number of wheels (via property): " + vehicle.wheelCount;
+    description = description + "\n\nNumber of wheels (via accessor): " + vehicle.getWheelCount();
+    description = description + "\n\nCurb Weight (via property): " + vehicle.curbWeightInPounds;
+    description = description + "\n\nCurb Weight (via accessor): " + vehicle.getCurbWeightInPounds();
+    description = description + "\n\nRefueling Method: " + vehicle.refuel();
+    description = description + "\n\nMain Tasks: " + vehicle.mainTasks();
+    alert(description);
+}
+
+function createVehicle() {
+    var vehicle = new Vehicle();
+    describe(vehicle);
+}
+
+function createSportsCar() {
+    var sportsCar = new SportsCar();
+    createInheritance(new Vehicle(), sportsCar);
+    sportsCar.setCurbWeightInPounds(3000);
+    describe(sportsCar);
+}
+
+function createCementTruck() {
+    var cementTruck = new CementTruck();
+    createInheritance(new Vehicle(), cementTruck);
+    cementTruck.setWheelCount(10);
+    cementTruck.setCurbWeightInPounds(10000);
+    describe(cementTruck);
+}
+</script>
+</head>
+
+<body>
+  <h1>Examples of Classical Inheritance in JavaScript</h1>
+  
+  <br/><br/>
+  <button onclick="createVehicle();">Create an instance of Vehicle</button>
+  
+  <br/><br/>
+  <button onclick="createSportsCar();">Create an instance of SportsCar</button>
+  
+  <br/><br/>
+  <button onclick="createCementTruck();">Create an instance of CementTruck</button>
+
+</body>
+</html>

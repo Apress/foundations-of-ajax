@@ -1,0 +1,184 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Employee List</title>
+
+<script type="text/javascript">
+var xmlHttp;
+var name;
+var title;
+var department;
+var deleteID;
+var EMP_PREFIX = "emp-";
+
+function createXMLHttpRequest() {
+    if (window.ActiveXObject) {
+        xmlHttp = new ActiveXObject("Microsoft.XMLHTTP");
+    } 
+    else if (window.XMLHttpRequest) {
+        xmlHttp = new XMLHttpRequest();
+    }
+}
+    
+function addEmployee() {
+    name = document.getElementById("name").value;
+    title = document.getElementById("title").value;
+    department = document.getElementById("dept").value;
+    action = "add";
+
+    if(name == "" || title == "" || department == "") {
+        return;
+    }
+    
+    var url = "EmployeeList?" 
+        + createAddQueryString(name, title, department, "add") 
+        + "&ts=" + new Date().getTime();
+        
+    createXMLHttpRequest();
+    xmlHttp.onreadystatechange = handleAddStateChange;
+    xmlHttp.open("GET", url, true);
+    xmlHttp.send(null);
+}
+
+function createAddQueryString(name, title, department, action) {
+    var queryString = "name=" + name 
+        + "&title=" + title
+        + "&department=" + department
+        + "&action=" + action;
+    return queryString;
+}
+    
+function handleAddStateChange() {
+    if(xmlHttp.readyState == 4) {
+        if(xmlHttp.status == 200) {
+            updateEmployeeList();
+            clearInputBoxes();
+        }
+        else {
+            alert("Error while adding employee.");
+        }
+    }
+}
+
+function clearInputBoxes() {
+    document.getElementById("name").value = "";
+    document.getElementById("title").value = "";
+    document.getElementById("dept").value = "";
+}
+
+function deleteEmployee(id) {
+    deleteID = id;
+    
+    var url = "EmployeeList?" 
+        + "action=delete" 
+        + "&id=" + id
+        + "&ts=" + new Date().getTime();
+        
+    createXMLHttpRequest();
+    xmlHttp.onreadystatechange = handleDeleteStateChange;
+    xmlHttp.open("GET", url, true);
+    xmlHttp.send(null);
+}
+
+function updateEmployeeList() {
+    var responseXML = xmlHttp.responseXML;
+
+    var status = responseXML.getElementsByTagName("status").item(0).firstChild.nodeValue;
+    status = parseInt(status);
+    if(status != 1) {
+        return;
+    }
+
+    
+    var row = document.createElement("tr");
+    var uniqueID = responseXML.getElementsByTagName("uniqueID")[0].firstChild.nodeValue;
+    row.setAttribute("id", EMP_PREFIX + uniqueID);
+    
+    row.appendChild(createCellWithText(name));
+    row.appendChild(createCellWithText(title));
+    row.appendChild(createCellWithText(department));
+    
+    var deleteButton = document.createElement("input");
+    deleteButton.setAttribute("type", "button");
+    deleteButton.setAttribute("value", "Delete");
+    deleteButton.onclick = function () { deleteEmployee(uniqueID); };
+    cell = document.createElement("td");
+    cell.appendChild(deleteButton);
+    row.appendChild(cell);
+    
+    document.getElementById("employeeList").appendChild(row);
+    updateEmployeeListVisibility();
+}
+
+function createCellWithText(text) {
+    var cell = document.createElement("td");
+    cell.appendChild(document.createTextNode(text));
+    return cell;
+}
+
+function handleDeleteStateChange() {
+    if(xmlHttp.readyState == 4) {
+        if(xmlHttp.status == 200) {
+            deleteEmployeeFromList();
+        }
+        else {
+            alert("Error while deleting employee.");
+        }
+    }
+
+}
+
+function deleteEmployeeFromList() {
+    var status = xmlHttp.responseXML.getElementsByTagName("status").item(0).firstChild.nodeValue;
+    status = parseInt(status);
+    if(status != 1) {
+        return;
+    }
+    
+    var rowToDelete = document.getElementById(EMP_PREFIX + deleteID);
+    var employeeList = document.getElementById("employeeList");
+    employeeList.removeChild(rowToDelete);
+    
+    updateEmployeeListVisibility();
+}
+
+function updateEmployeeListVisibility() {
+    var employeeList = document.getElementById("employeeList");
+    if(employeeList.childNodes.length > 0) {
+        document.getElementById("employeeListSpan").style.display = "";
+    }
+    else {
+        document.getElementById("employeeListSpan").style.display = "none";
+    }
+}
+</script>
+</head>
+
+<body>
+  <h1>Employee List</h1>
+  
+  <form action="#">
+    <table width="80%" border="0">
+        <tr>
+            <td>Name: <input type="text" id="name"/></td>
+            <td>Title: <input type="text" id="title"/></td>
+            <td>Department: <input type="text" id="dept"/></td>
+        </tr>
+        <tr>
+            <td colspan="3" align="center">
+                <input type="button" value="Add" onclick="addEmployee();"/>
+            </td>
+        </tr>
+    </table>
+  </form>
+
+  <span id="employeeListSpan" style="display:none;">
+  <h2>Employees:</h2>
+  
+  <table border="1" width="80%">
+    <tbody id="employeeList"></tbody>
+  </table>
+  </span>
+</body>
+</html>

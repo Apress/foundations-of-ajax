@@ -1,0 +1,111 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Yahoo! Search Web Services</title>
+
+<script type="text/javascript">
+var xmlHttp;
+
+function createXMLHttpRequest() {
+    if (window.ActiveXObject) {
+        xmlHttp = new ActiveXObject("Microsoft.XMLHTTP");
+    } 
+    else if (window.XMLHttpRequest) {
+        xmlHttp = new XMLHttpRequest();
+    }
+}
+    
+function doSearch() {
+    var url = "YahooSearchGateway?" + createQueryString() + "&ts=" + new Date().getTime();
+    createXMLHttpRequest();
+    xmlHttp.onreadystatechange = handleStateChange;
+    xmlHttp.open("GET", url, true);
+    xmlHttp.send(null);
+}
+
+function createQueryString() {
+    var searchString = document.getElementById("searchString").value;
+    searchString = escape(searchString);
+    
+    var maxResultsCount = document.getElementById("maxResultCount").value;
+
+    var queryString = "query=" + searchString + "&results=" + maxResultsCount;
+    return queryString;
+}
+    
+function handleStateChange() {
+    if(xmlHttp.readyState == 4) {
+        if(xmlHttp.status == 200) {
+            parseSearchResults();
+        }
+        else {
+            alert("Error accessing Yahoo! search");
+        }
+    }
+}
+
+function parseSearchResults() {
+    var resultsDiv = document.getElementById("results");
+    while(resultsDiv.childNodes.length > 0) {
+        resultsDiv.removeChild(resultsDiv.childNodes[0]);
+    }
+    
+    var allResults = xmlHttp.responseXML.getElementsByTagName("Result");
+    var result = null;
+    for(var i = 0; i < allResults.length; i++) {
+        result = allResults[i];
+        parseResult(result);
+    }
+}
+
+function parseResult(result) {
+    var resultDiv = document.createElement("div");
+    
+    var title = document.createElement("h3");
+    title.appendChild(document.createTextNode(getChildElementText(result, "Title")));
+    resultDiv.appendChild(title);
+    
+    var summary = document.createTextNode(getChildElementText(result, "Summary"));
+    resultDiv.appendChild(summary);
+    
+    resultDiv.appendChild(document.createElement("br"));
+    var clickHere = document.createElement("a");
+    clickHere.setAttribute("href", getChildElementText(result, "ClickUrl"));
+    clickHere.appendChild(document.createTextNode(getChildElementText(result, "Url")));
+    resultDiv.appendChild(clickHere);
+    
+    document.getElementById("results").appendChild(resultDiv);
+}
+
+function getChildElementText(parentNode, childTagName) {
+    var childTag = parentNode.getElementsByTagName(childTagName);
+    return childTag[0].firstChild.nodeValue;
+}
+</script>
+</head>
+
+<body>
+  <h1>Web Search Using Yahoo! Search Web Services</h1>
+  
+  <form action="#">
+    Search String: <input type="text" id="searchString"/>
+    
+    <br/><br/>
+    Max Number of Results:
+    <select id="maxResultCount">
+        <option value="1">1</option>
+        <option value="10">10</option>
+        <option value="25">25</option>
+        <option value="50">50</option>
+    </select>
+    
+    <br/><br/>
+    <input type="button" value="Submit" onclick="doSearch();"/>
+  </form>
+  
+  <h2>Results:</h2>
+  <div id="results"/>
+
+</body>
+</html>

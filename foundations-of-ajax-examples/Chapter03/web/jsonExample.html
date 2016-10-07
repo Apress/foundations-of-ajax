@@ -1,0 +1,82 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>JSON Example</title>
+
+<script type="text/javascript" src="json.js"></script>
+<script type="text/javascript">
+
+var xmlHttp;
+
+function createXMLHttpRequest() {
+    if (window.ActiveXObject) {
+        xmlHttp = new ActiveXObject("Microsoft.XMLHTTP");
+    } 
+    else if (window.XMLHttpRequest) {
+        xmlHttp = new XMLHttpRequest();
+    }
+}
+    
+function doJSON() {
+    var car = getCarObject();
+    
+    //Use the JSON JavaScript library to stringify the Car object
+    var carAsJSON = JSON.stringify(car);
+    alert("Car object as JSON:\n " + carAsJSON);
+    
+    var url = "JSONExample?timeStamp=" + new Date().getTime();
+    
+    createXMLHttpRequest();
+    xmlHttp.open("POST", url, true);
+    xmlHttp.onreadystatechange = handleStateChange;
+    xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");    
+    xmlHttp.send(carAsJSON);
+}
+    
+function handleStateChange() {
+    if(xmlHttp.readyState == 4) {
+        if(xmlHttp.status == 200) {
+            parseResults();
+        }
+    }
+}
+
+function parseResults() {
+    var responseDiv = document.getElementById("serverResponse");
+    if(responseDiv.hasChildNodes()) {
+        responseDiv.removeChild(responseDiv.childNodes[0]);
+    }
+    
+    var responseText = document.createTextNode(xmlHttp.responseText);
+    responseDiv.appendChild(responseText);
+}
+
+function getCarObject() {
+    return new Car("Dodge", "Coronet R/T", 1968, "yellow");
+}
+
+function Car(make, model, year, color) {
+    this.make = make;
+    this.model = model;
+    this.year = year;
+    this.color = color;
+}
+
+</script>
+</head>
+
+<body>
+
+  <br/><br/>
+  <form action="#">
+      <input type="button" value="Click here to send JSON data to the server"
+        onclick="doJSON();"/>
+  </form>
+  
+  <h2>Server Response:</h2>
+
+  <div id="serverResponse"></div>
+
+</body>
+</html>

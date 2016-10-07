@@ -1,0 +1,50 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>JavaScript Inheritance via Prototype</title>
+
+<script type="text/javascript" src="inheritanceViaPrototype.js"></script>
+
+<script type="text/javaScript">
+
+function describe(vehicle) {
+    var description = "";
+    description = description + "Number of wheels: " + vehicle.wheelCount;
+    description = description + "\n\nCurb Weight: " + vehicle.curbWeightInPounds;
+    description = description + "\n\nRefueling Method: " + vehicle.refuel();
+    description = description + "\n\nMain Tasks: " + vehicle.mainTasks();
+    alert(description);
+}
+
+function createVehicle() {
+    var vehicle = new Vehicle();
+    describe(vehicle);
+}
+
+function createSportsCar() {
+    var sportsCar = new SportsCar();
+    describe(sportsCar);
+}
+
+function createCementTruck() {
+    var cementTruck = new CementTruck();
+    describe(cementTruck);
+}
+</script>
+</head>
+
+<body>
+  <h1>Examples of JavaScript Inheritance via the Prototype Method</h1>
+  
+  <br/><br/>
+  <button onclick="createVehicle();">Create an instance of Vehicle</button>
+  
+  <br/><br/>
+  <button onclick="createSportsCar();">Create an instance of SportsCar</button>
+  
+  <br/><br/>
+  <button onclick="createCementTruck();">Create an instance of CementTruck</button>
+
+</body>
+</html>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<states>
+    <north>
+        <state>Minnesota</state>
+        <state>Iowa</state>
+        <state>North Dakota</state>
+    </north>
+    <south>
+        <state>Texas</state>
+        <state>Oklahoma</state>
+        <state>Louisiana</state>
+    </south>
+    <east>
+        <state>New York</state>
+        <state>North Carolina</state>
+        <state>Massachusetts</state>
+    </east>
+    <west>
+        <state>California</state>
+        <state>Oregon</state>
+        <state>Nevada</state>
+    </west>
+</states>

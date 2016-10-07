@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- You may freely edit this file. See commented blocks below for -->
+<!-- some examples of how to customize the build. -->
+<!-- (If you delete it and reopen the project it will be recreated.) -->
+<project name="ajax-dashboard" default="default" basedir=".">
+    <description>Builds, tests, and runs the project ajax-dashboard.</description>
+    <import file="nbproject/build-impl.xml"/>
+    <!--
+
+    There exist several targets which are by default empty and which can be 
+    used for execution of your tasks. These targets are usually executed 
+    before and after some main targets. They are: 
+
+    -pre-init:                 called before initialization of project properties 
+    -post-init:                called after initialization of project properties 
+    -pre-compile:              called before javac compilation 
+    -post-compile:             called after javac compilation 
+    -pre-compile-single:       called before javac compilation of single file
+    -post-compile-single:      called after javac compilation of single file
+    -pre-compile-test:         called before javac compilation of JUnit tests
+    -post-compile-test:        called after javac compilation of JUnit tests
+    -pre-compile-test-single:  called before javac compilation of single JUnit test
+    -post-compile-test-single: called after javac compilation of single JUunit test
+    -pre-dist:                 called before jar building 
+    -post-dist:                called after jar building 
+    -post-clean:               called after cleaning build products 
+
+    Example of pluging an obfuscator after the compilation could look like 
+
+    <target name="post-compile">
+    <obfuscate>
+    <fileset dir="${build.classes.dir}"/>
+    </obfuscate>
+    </target>
+
+    For list of available properties check the imported 
+    nbproject/build-impl.xml file. 
+
+
+    Other way how to customize the build is by overriding existing main targets.
+    The target of interest are: 
+
+    init-macrodef-javac:    defines macro for javac compilation
+    init-macrodef-junit:   defines macro for junit execution
+    init-macrodef-debug:    defines macro for class debugging
+    do-dist:                jar archive building
+    run:                    execution of project 
+    javadoc-build:          javadoc generation 
+
+    Example of overriding the target for project execution could look like 
+
+    <target name="run" depends="<PROJNAME>-impl.jar">
+    <exec dir="bin" executable="launcher.exe">
+    <arg file="${dist.jar}"/>
+    </exec>
+    </target>
+
+    Notice that overridden target depends on jar target and not only on 
+    compile target as regular run target does. Again, for list of available 
+    properties which you can use check the target you are overriding in 
+    nbproject/build-impl.xml file. 
+
+    -->
+    
+    <property name="axis.home" value="../../axis-1_2_1"/>
+
+    
+    <property name="weatherforecast.wsdl.url" value="http://www.webservicex.net/WeatherForecast.asmx?WSDL"/>
+    <property name="stockquote.wsdl.url" value="http://www.swanandmokashi.com/HomePage/WebServices/StockQuotes.asmx?WSDL"/>
+   
+    <path id="axis.classpath">
+        <fileset dir="${axis.home}/lib">
+            <include name="**/*.jar" />
+        </fileset>
+    </path>
+
+   
+    <taskdef resource="axis-tasks.properties"
+    classpathref="axis.classpath" />
+
+    <target name="generate-weather-forecast-ws-client" depends="-init-project">
+
+        <axis-wsdl2java
+            output="${src.dir}"
+            testcase="true"
+            verbose="true"
+            url="${weatherforecast.wsdl.url}" >
+            <mapping
+            namespace="http://www.webservicex.net"
+            package="ajaxdashboard.ws.weatherforecast" />
+        </axis-wsdl2java>
+    </target>     
+
+    <target name="-pre-compile">
+        <antcall target="generate-weather-forecast-ws-client"/>
+        <antcall target="generate-stock-quote-ws-client"/>
+       
+        <!-- Delete generated test cases which are dependent on JUnit -->
+        <delete>
+            <fileset dir="${src.dir}">
+                <include name="**/*TestCase.java"/>
+            </fileset>
+        </delete>
+    </target> 
+    
+
+    <target name="generate-stock-quote-ws-client" depends="-init-project">
+
+        <axis-wsdl2java
+            output="${src.dir}"
+            testcase="true"
+            verbose="true"
+            url="${stockquote.wsdl.url}" >
+            <mapping
+            namespace="http://swanandmokashi.com"
+            package="ajaxdashboard.ws.stockquote" />
+        </axis-wsdl2java>
+    </target>     
+
+</project>

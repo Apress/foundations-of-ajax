@@ -1,0 +1,55 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+  <head>
+    <title>Using Ajax for validation</title>
+  
+    <script type="text/javascript">
+        var xmlHttp;
+
+        function createXMLHttpRequest() {
+            if (window.ActiveXObject) {
+                xmlHttp = new ActiveXObject("Microsoft.XMLHTTP");
+            } 
+            else if (window.XMLHttpRequest) {
+                xmlHttp = new XMLHttpRequest();                
+            }
+        }
+
+        function validate() {
+            createXMLHttpRequest();
+            var date = document.getElementById("birthDate");
+            var url = "ValidationServlet?birthDate=" + escape(date.value);
+            xmlHttp.open("GET", url, true);
+            xmlHttp.onreadystatechange = callback;
+            xmlHttp.send(null);
+        }
+
+        function callback() {
+            if (xmlHttp.readyState == 4) {
+                if (xmlHttp.status == 200) {
+                    var mes = xmlHttp.responseXML.getElementsByTagName("message")[0].firstChild.data;
+                    var val = xmlHttp.responseXML.getElementsByTagName("passed")[0].firstChild.data;
+                    setMessage(mes, val);
+                }
+            }
+        }
+        
+        function setMessage(message, isValid) {            
+            var messageArea = document.getElementById("dateMessage");
+            var fontColor = "red";
+            
+            if (isValid == "true") {
+                fontColor = "green";                
+            }
+            messageArea.innerHTML = "<font color=" + fontColor + ">" + message + " </font>";
+        }
+
+    </script>
+  </head>
+  <body>
+    <h1>Ajax Validation Example</h1>
+    Birth date: <input type="text" size="10" id="birthDate" onchange="validate();"/>
+    <div id="dateMessage"></div>
+  </body>
+</html>

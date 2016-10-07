@@ -1,0 +1,132 @@
+/* 
+   Syntax recommendation http://www.w3.org/TR/REC-CSS2/
+*/
+
+#root {
+    position:absolute;
+    width:475px;
+    background-color:#F4F4F4;
+    border:1px solid #333;
+}
+
+#handle {
+    margin:2px;
+    padding:2px;
+    width:467px;
+    color:white;
+    background-color:navy;
+    font-family:verdana, sans-serif;
+    font-size:10px;
+}
+
+#stockQuoteRoot {
+    position:absolute;
+    width:400px;
+    background-color:#F4F4F4;
+    border:1px solid #333;
+}
+
+#stockQuoteHandle {
+    margin:2px;
+    padding:2px;
+    width:392px;
+    color:white;
+    background-color:red;
+    font-family:verdana, sans-serif;
+    font-size:10px;
+}
+
+.stockQuoteContent {
+    height:250px;
+    overflow:auto;
+    font-family:verdana, sans-serif;
+    font-size:10px;
+}
+
+#newsItemsRoot {
+    position:absolute;
+    width:300px;
+    background-color:#F4F4F4;
+    border:1px solid #333;
+}
+
+#newsItemsHandle {
+    margin:2px;
+    padding:2px;
+    width:292px;
+    color:white;
+    background-color:green;
+    font-family:verdana, sans-serif;
+    font-size:10px;
+}
+
+#newsItemsContent {
+     height:250px;
+     overflow:auto;
+}
+
+#searchRoot {
+    position:absolute;
+    width:300px;
+    background-color:#F4F4F4;
+    border:1px solid #333;
+}
+
+#searchHandle {
+    margin:2px;
+    padding:2px;
+    width:292px;
+    color:white;
+    background-color:blue;
+    font-family:verdana, sans-serif;
+    font-size:10px;
+}
+
+#searchContent {
+    font-family:verdana, sans-serif;
+    font-size:10px;
+}
+
+a.newsLink {
+    font-family:verdana, sans-serif;
+    font-size:10px;
+    text-decoration:none;
+}
+
+a.newsLink:hover {
+    text-decoration:underline;
+}
+
+.controls {
+    text-decoration:none;
+    color:white;
+}
+
+.textbox {
+    font-size:10px;
+}
+
+.normalText {
+    font-family:verdana, sans-serif;
+    font-size:10px;
+}
+
+td {
+    color:black;
+    font-family:verdana, sans-serif;
+    font-size:10px;
+}
+
+.autocomplete {
+    font-family:verdana, sans-serif;
+    font-size:10px;
+    text-decoration:none;
+}
+
+.resultRow {
+    background-color:#ffffff;
+}
+
+.resultRowOver {
+    background-color:#ffffc6;
+}

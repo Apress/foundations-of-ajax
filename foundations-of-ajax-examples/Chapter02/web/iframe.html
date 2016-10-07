@@ -1,0 +1,23 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+  <head>
+    <title>Example of remote scripting in an IFRAME</title>
+  </head>
+  <script type="text/javascript">
+    function handleResponse() {
+      alert('this function is called from server.html');
+    }
+  </script>  
+  <body>
+  <h1>Remote Scripting with an IFRAME</h1>
+  
+  <iframe id="beforexhr"
+  name="beforexhr"
+  style="width:0px; height:0px; border: 0px"
+  src="blank.html"></iframe>
+
+  <a href="server.html" target="beforexhr">call the server</a>
+  
+  </body>
+</html>

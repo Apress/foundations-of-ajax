@@ -1,0 +1,127 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+  <head>
+    <title>Ajax Tooltip</title>
+    <script type="text/javascript">        
+        var xmlHttp;
+        var dataDiv;
+        var dataTable;
+        var dataTableBody;
+        var offsetEl;
+
+        function createXMLHttpRequest() {
+            if (window.ActiveXObject) {
+                xmlHttp = new ActiveXObject("Microsoft.XMLHTTP");
+            }
+            else if (window.XMLHttpRequest) {
+                xmlHttp = new XMLHttpRequest();                
+            }
+        }
+
+        function initVars() {
+            dataTableBody = document.getElementById("courseDataBody");            
+            dataTable = document.getElementById("courseData");
+            dataDiv = document.getElementById("popup");
+        }
+
+        function getCourseData(element) {
+            initVars();            
+            createXMLHttpRequest();
+            offsetEl = element;
+            var url = "ToolTipServlet?key=" + escape(element.id);
+            
+            xmlHttp.open("GET", url, true);
+            xmlHttp.onreadystatechange = callback;
+            xmlHttp.send(null);
+        }
+
+        function callback() {
+            if (xmlHttp.readyState == 4) {
+                if (xmlHttp.status == 200) {
+                    setData(xmlHttp.responseXML);
+                }
+            }
+        }
+        
+        function setData(courseData) {            
+            clearData();
+            setOffsets();
+            var length = courseData.getElementsByTagName("length")[0].firstChild.data;
+            var par = courseData.getElementsByTagName("par")[0].firstChild.data;
+            
+            var row, row2;
+            var parData = "Par: " + par
+            var lengthData = "Length: " + length;
+            
+            row = createRow(parData);            
+            row2 = createRow(lengthData);
+            
+            dataTableBody.appendChild(row);
+            dataTableBody.appendChild(row2);
+        }
+
+        function createRow(data) {            
+            var row, cell, txtNode;
+            row = document.createElement("tr");
+            cell = document.createElement("td");
+
+            cell.setAttribute("bgcolor", "#FFFAFA");
+            cell.setAttribute("border", "0");                           
+
+            txtNode = document.createTextNode(data);
+            cell.appendChild(txtNode);
+            row.appendChild(cell);
+           
+            return row;  
+        }
+        
+        function setOffsets() {
+            var end = offsetEl.offsetWidth;
+            var top = calculateOffsetTop(offsetEl);
+            dataDiv.style.border = "black 1px solid";
+            dataDiv.style.left = end + 15 + "px";
+            dataDiv.style.top = top + "px";
+        }
+        
+        function calculateOffsetTop(field) {
+          return calculateOffset(field, "offsetTop");
+        }
+
+        function calculateOffset(field, attr) {
+          var offset = 0;
+          while(field) {
+            offset += field[attr]; 
+            field = field.offsetParent;
+          }
+          return offset;
+        }
+
+        function clearData() {            
+            var ind = dataTableBody.childNodes.length;            
+            for (var i = ind - 1; i >= 0 ; i--) {
+                dataTableBody.removeChild(dataTableBody.childNodes[i]);       
+            }
+            dataDiv.style.border = "none";
+        }        
+    </script>
+  </head>
+  <body>
+    <h1>Ajax Tooltip Example</h1>
+    <h3>Golf Courses</h3>
+    <table id="courses" bgcolor="#FFFAFA" border="1" cellspacing="0" cellpadding="2"/>
+        <tbody>
+            <tr><td id="1" onmouseover="getCourseData(this);" onmouseout="clearData();">Augusta National</td></tr>
+            <tr><td id="2" onmouseover="getCourseData(this);" onmouseout="clearData();">Pinehurst No. 2</td></tr>
+            <tr><td id="3" onmouseover="getCourseData(this);" onmouseout="clearData();">St. Andrews Links</td></tr>
+            <tr><td id="4" onmouseover="getCourseData(this);" onmouseout="clearData();">Baltusrol Golf Club</td></tr>
+        </tbody>        
+    </table>
+    <div style="position:absolute;" id="popup">
+        <table id="courseData" bgcolor="#FFFAFA" border="0" cellspacing="2" cellpadding="2"/>
+            <tbody id="courseDataBody"></tbody>
+        </table>
+    </div>
+
+  </body>
+</html>
